@@ -7,7 +7,6 @@ from models.album import Album
 
 
 def save(artist):
-
     sql = "INSERT INTO artists (name) VALUES ( %s ) RETURNING *"
     values = [artist.name]
     results = run_sql(sql, values)
@@ -54,3 +53,16 @@ def update(artist):
     sql = "UPDATE artists SET ( name ) = ( %s ) WHERE id = %s"
     values = [artist.name, artist.id]
     run_sql(sql, values)
+
+
+def albums(artist):
+    albums = []
+
+    sql = "SELECT * FROM albums WHERE artist_id = %s"
+    values = [artist.id]
+    results = run_sql(sql, values)
+
+    for row in results:
+        album = Album(row["title"], row["genre"], artist, row["id"])
+        albums.append(album)
+    return albums
